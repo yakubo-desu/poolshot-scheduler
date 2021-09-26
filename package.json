@@ -1,0 +1,23 @@
+{
+  "name": "poolshot-scheduler",
+  "version": "1.0.0",
+  "description": "",
+  "exports": "./src/index.js",
+  "scripts": {
+    "start": "tsc && node dist"
+  },
+  "author": "Yakubo",
+  "type": "module",
+  "license": "ISC",
+  "engines": {
+    "node": "14"
+  },
+  "devDependencies": {
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "lowdb": "^3.0.0",
+    "uuid": "^8.3.2"
+  }
+}
