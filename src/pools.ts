@@ -50,8 +50,8 @@ export class PoolStage {
         }));
     }
 
-    updateMatch(matchId: string, results: [number, number]) {
-        return this.store.updateMatch(matchId, results, seedRefToIndex);
+    reportMatch(matchId: string, results: [number, number]) {
+        return this.store.reportMatch(matchId, results, seedRefToIndex);
     }
 
     logSchedule() {
@@ -122,7 +122,7 @@ class Day1TeamStanding {
     }
 
     get matchesPlayed(): Match[] {
-        return this.store.schedule.day1.matches.filter(m => m.lock && m.teams?.find(t => t.id === this.teamId));
+        return this.store.schedule.day1.matches.filter(m => m.teams?.find(t => t.id === this.teamId));
     }
 
     get matchesWon(): Match[] {
@@ -154,7 +154,7 @@ class Day1TeamStanding {
     }
 
     private matchWinner(m: Match) {
-        if (m.lock && m.results && m.teams) {
+        if (m.results && m.teams) {
             return (m.results[0] > m.results[1]) ? m.teams[0] : m.teams[1];
         }
     }

@@ -1,4 +1,5 @@
 import { JSONFile, Low } from "lowdb";
+import { HTTPError } from "./server.js";
 import { StoreData, Team } from "./types";
 
 export class Store {
@@ -21,7 +22,29 @@ export class Store {
         ];
     }
 
-    async updateMatch(matchId: string, results: [number, number], refToIndex: (ref: string) => number) {
+    async reportMatch(matchId: string, results: [number, number], refToIndex: (ref: string) => number) {
+        if (results === null) {
+            return this.resetMatch(matchId);
+        }
+        if (!results || results.length !== 2) {
+            throw HTTPError.BAD_REQUEST('Results format incorrect! results provided: ' + results);
+        }
+        const match = this.allMatches.find(m => m.id === matchId);
+        if (!match) {
+            throw HTTPError.NOT_FOUND('Match not found with id: ' + matchId);
+        }
+        if (match.lock) {
+            throw HTTPError.FORBIDDEN(`Locked match can't be updated! MatchId: ${matchId}`);
+        }
+        if (results[0] + results[1] > match.bestOf || Math.max(...results) * 2 !== match.bestOf + 1) {
+            throw HTTPError.BAD_REQUEST(`Unacceptable result ${results[0]} - ${results[1]} for given Bo${match.bestOf} match with id ${matchId}`);
+        }
+        match.results = results;
+        match.teams = match.teamsRefs.map(ref => this.data.teams[refToIndex(ref)]) as [Team, Team];
+        await this.db.write();
+    }
+
+    private async resetMatch(matchId: string) {
         const match = this.allMatches.find(m => m.id === matchId);
         if (!match) {
             console.warn('Didn\'t update match cuz not found with id: ' + matchId);
@@ -31,8 +54,9 @@ export class Store {
             console.warn('Didn\'t update match cuz match is locked! MatchId:' + matchId);
             return;
         }
-        match.results = results;
-        match.teams = match.teamsRefs.map(ref => this.data.teams[refToIndex(ref)]) as [Team, Team];
+        delete match.results;
+        delete match.teams;
+        delete match.lock;
         await this.db.write();
     }
 
@@ -43,6 +67,15 @@ export class Store {
             return;
         }
         match.lock = true;
+        await this.db.write();
+    }
+
+    async resetAllMatches() {
+        this.allMatches.forEach(match => {
+            delete match.results;
+            delete match.teams;
+            delete match.lock;
+        });
         await this.db.write();
     }
 }

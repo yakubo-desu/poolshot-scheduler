@@ -1,13 +1,14 @@
+import { config } from "dotenv"; config();
 import { Store } from "./store.js";
 import { PoolStage } from "./pools.js";
+import { Server } from "./server.js";
 
 const main = async () => {
     const store = new Store();
     await store.load();
 
     const poolStage = new PoolStage(store);
-    // poolStage.logResults();
-    // console.log(JSON.stringify(poolStage.exportStandings(), null, 2));
+    const server = new Server(poolStage);
 }
 
 // db.data.schedule.day1.matches = [
