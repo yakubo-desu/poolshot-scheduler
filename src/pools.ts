@@ -1,9 +1,9 @@
-import { Match, StoreData, Team } from "./types.js";
+import { Match, StoreData, Team, TeamRef } from "./types.js";
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
 import { Store } from "./store.js";
 
-const seedRefToIndex = (ref: string) => +(ref.slice('seed-'.length)) - 1;
+const seedRefToIndex = (ref: TeamRef) => +(ref.slice('seed-'.length)) - 1;
 
 export class PoolStage {
     private readonly teams: PoolStandings

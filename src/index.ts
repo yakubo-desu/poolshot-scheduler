@@ -2,12 +2,14 @@ import { config } from "dotenv"; config();
 import { Store } from "./store.js";
 import { PoolStage } from "./pools.js";
 import { Server } from "./server.js";
+import { ElimStage } from "./elims.js";
 
 const main = async () => {
     const store = new Store();
     await store.load();
 
     const poolStage = new PoolStage(store);
+    const elimStage = new ElimStage(store);
     const server = new Server(poolStage);
 }
 

@@ -1,6 +1,6 @@
 import { JSONFile, Low } from "lowdb";
 import { HTTPError } from "./server.js";
-import { StoreData, Team } from "./types";
+import { StoreData, Team, TeamRef } from "./types.js";
 
 export class Store {
     private db = new Low(new JSONFile<StoreData>('db.json'));
@@ -22,7 +22,7 @@ export class Store {
         ];
     }
 
-    async reportMatch(matchId: string, results: [number, number], refToIndex: (ref: string) => number) {
+    async reportMatch(matchId: string, results: [number, number], refToIndex: (ref: TeamRef) => number) {
         if (results === null) {
             return this.resetMatch(matchId);
         }
