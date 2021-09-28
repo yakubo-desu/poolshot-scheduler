@@ -1,15 +1,17 @@
 import express, { RequestHandler } from 'express';
+import { ElimStage } from './elims.js';
 import { PoolStage } from './pools.js';
 
 export class Server {
     private app = express();
 
-    constructor(private poolStage: PoolStage) {
+    constructor(private poolStage: PoolStage, private elimStage: ElimStage) {
         this.app.use(express.json());
         // api and healthcheck
         this.app.get('/healthcheck', this.withErrorsHandled(this.healthCheck));
         this.app.get('/api/pool-standings', this.withErrorsHandled(this.getPoolStandings));
         this.app.get('/api/day1-schedule', this.withErrorsHandled(this.getDay1Schedule));
+        this.app.get('/api/day2-schedule', this.withErrorsHandled(this.getDay2Schedule));
         this.app.post('/api/report-match/:matchId', this.withErrorsHandled(this.reportMatch));
 
         // anything else try to find from public folder
@@ -23,14 +25,12 @@ export class Server {
     }
 
     private getDay1Schedule: RequestHandler = (req, res) => {
-        const matches = this.poolStage.matches.map(match => ({
-            ...match,
-            teams: [
-                match.teams?.[0].name ?? match.teamsRefs[0],
-                match.teams?.[1].name ?? match.teamsRefs[1]
-            ],
-            teamsRefs: undefined
-        }));
+        const matches = this.poolStage.matches;
+        res.send(matches);
+    }
+
+    private getDay2Schedule: RequestHandler = (req, res) => {
+        const matches = this.elimStage.matches;
         res.send(matches);
     }
 

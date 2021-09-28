@@ -1,9 +1,8 @@
-import { Match, StoreData, Team, TeamRef } from "./types.js";
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
+import { Match, StoreData, Team, TeamRef } from "./types.js";
 import { Store } from "./store.js";
-
-const seedRefToIndex = (ref: TeamRef) => +(ref.slice('seed-'.length)) - 1;
+import { matchWinner } from "./utils.js";
 
 export class PoolStage {
     private readonly teams: PoolStandings
@@ -16,6 +15,8 @@ export class PoolStage {
             poolD: [3, 7, 11, 15].map(i => new Day1TeamStanding(store.data, store.data.teams[i].id))
         }
     }
+
+    get isLocked() { return this.store.data.schedule.day1.lock }
 
     get standings(): PoolStandings {
         return {
@@ -44,14 +45,20 @@ export class PoolStage {
     get matches() {
         return this.store.data.schedule.day1.matches.map(match => ({
             ...match,
-            ...(match.teams ? {} : {
-                teams: match.teamsRefs.map(ref => this.store.data.teams[seedRefToIndex(ref)])
-            })
+            teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref) ?? { ref, name: ref }),
+            teamsRefs: undefined
         }));
     }
 
+    resolveTeamRef(ref: TeamRef) {
+        if (ref?.startsWith('seed-')) {
+            const index = +(ref.slice('seed-'.length)) - 1;
+            return this.store.data.teams[index];
+        }
+    }
+
     reportMatch(matchId: string, results: [number, number]) {
-        return this.store.reportMatch(matchId, results, seedRefToIndex);
+        return this.store.reportMatch(matchId, results, this.resolveTeamRef.bind(this));
     }
 
     logSchedule() {
@@ -127,14 +134,14 @@ class Day1TeamStanding {
 
     get matchesWon(): Match[] {
         return this.matchesPlayed.filter(m => {
-            const winner = this.matchWinner(m);
+            const winner = matchWinner(m);
             return (winner && winner.id === this.teamId);
         });
     }
 
     get matchesLost(): Match[] {
         return this.matchesPlayed.filter(m => {
-            const winner = this.matchWinner(m);
+            const winner = matchWinner(m);
             return (winner && winner.id !== this.teamId);
         });
     }
@@ -151,12 +158,6 @@ class Day1TeamStanding {
             const i = m.teams?.findIndex(t => t.id !== this.teamId)!;
             return sum + (m.results?.[i] ?? 0);
         }, 0);
-    }
-
-    private matchWinner(m: Match) {
-        if (m.results && m.teams) {
-            return (m.results[0] > m.results[1]) ? m.teams[0] : m.teams[1];
-        }
     }
 
     export() {

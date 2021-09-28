@@ -22,7 +22,7 @@ export class Store {
         ];
     }
 
-    async reportMatch(matchId: string, results: [number, number], refToIndex: (ref: TeamRef) => number) {
+    async reportMatch(matchId: string, results: [number, number], resolveTeamRef: (ref: TeamRef) => Team | undefined) {
         if (results === null) {
             return this.resetMatch(matchId);
         }
@@ -39,8 +39,12 @@ export class Store {
         if (results[0] + results[1] > match.bestOf || Math.max(...results) * 2 !== match.bestOf + 1) {
             throw HTTPError.BAD_REQUEST(`Unacceptable result ${results[0]} - ${results[1]} for given Bo${match.bestOf} match with id ${matchId}`);
         }
+        const [team1, team2] = match.teamsRefs.map(ref => resolveTeamRef(ref));
+        if (!team1 || !team2) {
+            throw HTTPError.BAD_REQUEST(`Team-refs could not be resolved for refs ${match.teamsRefs}. Check if the required matches are completed.`);
+        }
         match.results = results;
-        match.teams = match.teamsRefs.map(ref => this.data.teams[refToIndex(ref)]) as [Team, Team];
+        match.teams = [team1, team2];
         await this.db.write();
     }
 

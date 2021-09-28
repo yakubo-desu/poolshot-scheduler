@@ -9,8 +9,8 @@ const main = async () => {
     await store.load();
 
     const poolStage = new PoolStage(store);
-    const elimStage = new ElimStage(store);
-    const server = new Server(poolStage);
+    const elimStage = new ElimStage(store, poolStage);
+    const server = new Server(poolStage, elimStage);
 }
 
 // db.data.schedule.day1.matches = [

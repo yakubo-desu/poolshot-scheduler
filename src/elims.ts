@@ -1,37 +1,52 @@
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
+import { PoolStage } from './pools.js';
 import { Store } from "./store.js";
-import { LowerBracketRef, Match, MatchRef, UpperBracketRef } from './types.js';
-
-const elimTeamRefToIndex = (ref: string) => +(ref.slice('seed-'.length)) - 1;
+import { PoolName, TeamRef } from './types.js';
+import { matchLoser, matchWinner } from './utils.js';
 
 export class ElimStage {
-    private readonly brackets: ElimBrackets;
 
-    constructor(private store: Store) {
-        this.brackets = {
-            upperBracket: store.data.schedule.day2.matches.filter(m => this.isUpperBracketMatch(m)),
-            lowerBracket: store.data.schedule.day2.matches.filter(m => this.isLowerBracketMatch(m)),
-            grandFinals: store.data.schedule.day2.matches.find(m => this.isGrandFinalsMatch(m))!
+    constructor(private store: Store, private poolStage: PoolStage) {
+    }
+
+    get matches() {
+        return this.store.data.schedule.day2.matches.map(match => ({
+            ...match,
+            teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref) ?? { ref, name: ref }),
+            teamsRefs: undefined
+        }));
+    }
+
+    resolveTeamRef(teamRef: TeamRef) {
+        if (teamRef.startsWith('pool-')) {
+            if (!this.poolStage.isLocked) return;
+            const pool = teamRef.slice('pool-'.length)[0].toUpperCase() as Uppercase<PoolName>;
+            const pos = +teamRef.slice('pool-a'.length);
+            return this.poolStage.standings[`pool${pool}`][pos-1].team;
+        }
+        if (teamRef.startsWith('wo-')) {
+            const matchRef = teamRef.slice('wo-'.length);
+            const match = this.store.data.schedule.day2.matches.find(m => m.ref === matchRef);
+            if (!match) return;
+            return matchWinner(match);
+        }
+        if (teamRef.startsWith('lo-')) {
+            const matchRef = teamRef.slice('lo-'.length);
+            const match = this.store.data.schedule.day2.matches.find(m => m.ref === matchRef);
+            if (!match) return;
+            return matchLoser(match);
         }
     }
 
-    private isUpperBracketMatch(match: Match): match is Match<UpperBracketRef> {
-        return (match.ref.startsWith('u'));
+    reportMatch(matchId: string, results: [number, number]) {
+        return this.store.reportMatch(matchId, results, this.resolveTeamRef.bind(this));
     }
 
-    private isLowerBracketMatch(match: Match): match is Match<LowerBracketRef> {
-        return (match.ref.startsWith('l'));
-    }
-
-    private isGrandFinalsMatch(match: Match): match is Match<'gf'> {
-        return match.ref === 'gf';
-    }
-
-    // passthrough function for type checks only
-    private guardMatchRefs<T extends MatchRef = MatchRef>(matches: Match<T>[]) {
-        return matches;
-    }
+    // // passthrough function for type checks only
+    // private guardMatchRefs<T extends MatchRef = MatchRef>(matches: Match<T>[]) {
+    //     return matches;
+    // }
 
     // private createElimMatches() {
     //     const UBMatches = this.guardMatchRefs<UpperBracketRef>([
@@ -126,10 +141,4 @@ export class ElimStage {
     //     ]; //.sort((a, b) => a.time < b.time ? -1 : 1);
     //     this.store['db'].write();
     // }
-}
-
-interface ElimBrackets {
-    upperBracket: Match[],
-    lowerBracket: Match[],
-    grandFinals: Match
 }
