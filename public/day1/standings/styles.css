@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap');
+
+body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    margin: 0;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    width: fit-content;
+    height: fit-content;
+}
+
+.container {
+    text-transform: uppercase;
+    overflow: hidden;
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+}
+
+.container > img.bg {
+    position: absolute;
+}
+
+.poolshot {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+.page-heading {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+.all-pools {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px 0;
+}
+.pool-standings {
+    width: 40%;
+    position: relative;
+}
+.pool-standings img {
+    width: 100%;
+}
+.pool-name {
+    position: absolute;
+    left: 330px;
+    top: 4px;
+    font-size: 30px;
+    font-weight: 700;
+}
+.standings {
+    position: absolute;
+    top: 55px;
+}
+.headings, .entries {
+    position: relative;
+    font-size: 30px;
+    display: flex;
+    width: 100%;
+}
+.entries {
+    color: white;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.team-name {
+    margin-left: 60px;
+    width: 450px;
+}
+.team-name > span {
+    margin-left: 24px;
+}
+.entries > .team-name > span {
+    margin-left: 10px;
+}
+.team-data {
+    width: 200px;
+}
+.team-data > span:nth-child(1) {
+    margin-left: 25px;
+}
+.team-data > span:nth-child(2) {
+    margin-left: 62px;
+}
+
+.entries .team-data > span:nth-child(1) {
+    margin-left: 29px;
+}
+.entries .team-data > span:nth-child(2) {
+    margin-left: 58px;
+}
