@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>PoolShot #2 - Day 1 Matches</title>
+        <link  rel="stylesheet" href="./styles.css">
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/vue@next"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="poolshot"><img height="150" src="https://cdn.discordapp.com/attachments/893033554538283060/893047744967606302/HEADINGPOOLSHOT2.svg"></div>
+            <div class="page-heading"><img height="100" src="https://cdn.discordapp.com/attachments/893033554538283060/893049046485331988/HEADINGDAY1POOLSTAGE.svg"></div>
+            <br/>
+            <div class="search">
+                <input type="text" v-model="searchQuery" placeholder="🔎 Search match or team">
+            </div>
+            <div class="matches">
+                <div class="match" v-for="match in searchedMatches">
+                    <div class="name">{{ match.name }}</div>
+                    <div class="fixture">
+                        <div class="team-blue">{{ match.teams[0].name }}</div>
+                        <span>{{ match.results ? match.results[0] + ' - ' + match.results[1] : getTime(match) }}</span>
+                        <div class="team-orange">{{ match.teams[1].name }}</div>
+                    </div>
+                    <div class="best-of">Best of {{match.bestOf}}</div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="./script.js"></script>
+</html>
