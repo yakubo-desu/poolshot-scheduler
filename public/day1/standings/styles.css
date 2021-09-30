@@ -65,32 +65,31 @@ body {
 .entries {
     color: white;
     font-weight: 600;
-    margin-top: 15px;
+    margin-top: 12px;
 }
 
 .team-name {
     margin-left: 60px;
     width: 450px;
 }
-.team-name > span {
+.team-name > div {
     margin-left: 24px;
 }
-.entries > .team-name > span {
+.entries > .team-name > div {
     margin-left: 10px;
 }
 .team-data {
     width: 200px;
-}
-.team-data > span:nth-child(1) {
-    margin-left: 25px;
-}
-.team-data > span:nth-child(2) {
-    margin-left: 62px;
+    display: flex;
 }
 
-.entries .team-data > span:nth-child(1) {
-    margin-left: 29px;
+.team-data > div:nth-child(1) {
+    margin-left: 25px;
+    width: 70px;
+    text-align: center;
 }
-.entries .team-data > span:nth-child(2) {
-    margin-left: 58px;
+.team-data > div:nth-child(2) {
+    margin-left: 35px;
+    width: 60px;
+    text-align: center;
 }
