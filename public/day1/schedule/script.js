@@ -11,6 +11,9 @@ const AppState = Vue.createApp({
         searchedMatches() {
             if (!this.searchQuery) return this.matches;
             const indexOfIgnoreCase = (s, q) => s.toLowerCase().indexOf(q.toLowerCase());
+            if (indexOfIgnoreCase(this.searchQuery, 'stream') !== -1) {
+                return this.matches.filter(m => m.willStream);
+            }
             const hasQuery = (m) => {
                 return indexOfIgnoreCase(m.name, this.searchQuery) !== -1
                     || indexOfIgnoreCase(m.teams[0].name, this.searchQuery) !== -1
@@ -43,4 +46,6 @@ const AppState = Vue.createApp({
 const fetchData = () => axios.get('/api/day1-schedule').then(({data}) => AppState.updateMatches(data));
 
 fetchData();
-// setInterval(fetchData, 5000);
+if (location.search.indexOf('autorefresh') !== -1) {
+    setInterval(fetchData, 10000);
+}

@@ -22,6 +22,7 @@ export interface Match<Ref extends MatchRef = MatchRef> {
     teamsRefs: [TeamRef, TeamRef];
     results?: [number, number];
     teams?: [Team, Team];
+    willStream?: boolean;
     lock?: boolean;
 }
 

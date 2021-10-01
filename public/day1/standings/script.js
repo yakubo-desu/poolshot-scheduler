@@ -31,4 +31,6 @@ const AppState = Vue.createApp({
 const fetchData = () => axios.get('/api/pool-standings').then(({data}) => AppState.updateState(data));
 
 fetchData();
-setInterval(fetchData, 5000);
+if (location.search.indexOf('autorefresh') !== -1) {
+    setInterval(fetchData, 10000);
+}
