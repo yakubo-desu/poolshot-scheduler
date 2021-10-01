@@ -22,6 +22,8 @@ export class Server {
         this.app.use(`/${this.adminPrefix}/` , express.static('admin'));
 
         // anything else try to find from public folder
+        this.app.get('/day2/standings', (req, res) => res.send('Oops, you\'re too early here mate! Come back tommorrow!'));
+        this.app.get('/day2/schedule', (req, res) => res.send('Oops, you\'re too early here mate! Come back tommorrow!'));
         this.app.use('/', express.static('public'));
         this.app.listen(process.env.HTTP_PORT ?? 3000, () => console.log(`listening!`));
     }

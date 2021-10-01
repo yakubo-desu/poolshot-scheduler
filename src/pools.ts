@@ -1,6 +1,6 @@
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
-import { Match, StoreData, Team, TeamRef } from "./types.js";
+import { Match, StoreData, TeamRef } from "./types.js";
 import { Store } from "./store.js";
 import { matchWinner } from "./utils.js";
 
@@ -37,9 +37,63 @@ export class PoolStage {
         }
     }
 
-    private sortTeamStandings(s: Day1TeamStanding[]) {
-        // TODO: correct the sorting order as per tie breaker logic
-        return s.slice().sort((a, b) => b.matchesWon.length - a.matchesWon.length);
+    private sortTeamStandings(teams: Day1TeamStanding[]) {
+        const sortedOrder: Day1TeamStanding[] = [];
+
+        const intoBuckets = (teams: Day1TeamStanding[], measure: (t: Day1TeamStanding) => number) => {
+            const buckets = new Map<number, Day1TeamStanding[]>();
+            teams.forEach(team => {
+                const measurement = measure(team);
+                if (!buckets.has(measurement)) {
+                    buckets.set(measurement, []);
+                }
+                buckets.get(measurement)?.push(team);
+            });
+            return buckets;
+        }
+
+        // sorts by headToHead for 2 teams, if >2 teams, breaks them binarily into 2 groups sorted by seed, then resolves those teams recursively
+        const headToHeadSort = (teams: Day1TeamStanding[]): Day1TeamStanding[] => {
+            if (!teams.length || teams.length < 2) return teams;
+            if (teams.length > 2) {
+                teams.sort((a, b) => a.team.seed - b.team.seed)
+                const m = Math.floor(teams.length / 2);
+                return [
+                    ...headToHeadSort(teams.slice(0, m)),
+                    ...headToHeadSort(teams.slice(m))
+                ]
+            }
+            // exactly 2 teams now
+            const match = this.store.data.schedule.day1.matches.find(m => m.teams && m.teams[0].name === teams[0].team.name && m.teams[1].name === teams[1].team.name);
+            if (!match)  return teams.sort((a, b) => a.team.seed - b.team.seed);
+            return (matchWinner(match)?.id === teams[0].team.id) ? teams : [teams[1], teams[0]];
+        }
+
+        // sort by series wins first
+        const matchWinBuckets = intoBuckets(teams, t => t.matchesWon.length);
+        [...matchWinBuckets.keys()].sort((a, b) => b - a).forEach(mwin => {
+            const teams = matchWinBuckets.get(mwin);
+            if (!teams || !teams.length) return;
+            // if only 1 team in bucket, no tie-breaker needed
+            if (teams.length === 1) {
+                sortedOrder.push(teams[0]);
+                return;
+            }
+            // if >1 teams in bucket, sort by game diffs
+            const gameDiffBuckets = intoBuckets(teams, t => t.gamesWon - t.gamesLost);
+            [...gameDiffBuckets.keys()].sort((a, b) => b - a).forEach(gdiff => {
+                const teams = gameDiffBuckets.get(gdiff);
+                if (!teams || !teams.length) return;
+                // if only 1 team in bucket, no more tie-breaker needed
+                if (teams.length === 1) {
+                    sortedOrder.push(teams[0]);
+                    return;
+                }
+                // if >1 teams in bucket, sort by headToHead
+                sortedOrder.push(...headToHeadSort(teams));
+            });
+        })
+        return sortedOrder;
     }
 
     get matches() {
@@ -126,7 +180,7 @@ class Day1TeamStanding {
     constructor(private store: StoreData, private teamId: string) {}
 
     get team() {
-        return this.store.teams.find(t => t.id === this.teamId);
+        return this.store.teams.find(t => t.id === this.teamId)!;
     }
 
     get matchesPlayed(): Match[] {
