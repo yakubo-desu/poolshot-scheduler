@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>PoolShot #2 - Day 1 Matches</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link  rel="stylesheet" href="./styles.css">
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/vue@next"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="poolshot"><img height="150" src="https://cdn.discordapp.com/attachments/893033554538283060/893047744967606302/HEADINGPOOLSHOT2.svg"></div>
+            <div class="page-heading"><img height="100" src="https://cdn.discordapp.com/attachments/893033554538283060/893049046485331988/HEADINGDAY1POOLSTAGE.svg"></div>
+            <br/>
+            <div class="search">
+                <input type="text" v-model="searchQuery" placeholder="🔎 Search match or team">
+            </div>
+            <div class="matches">
+                <template v-for="match in searchedMatches">
+                    <match-row :match="match"></match-row>
+                </template>
+            </div>
+        </div>
+    </body>
+    <script src="./script.js"></script>
+    <script src="../../resize.js"></script>
+</html>

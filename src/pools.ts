@@ -45,6 +45,7 @@ export class PoolStage {
     get matches() {
         return this.store.data.schedule.day1.matches.map(match => ({
             ...match,
+            lock: this.isLocked,
             teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref) ?? { ref, name: ref }),
             teamsRefs: undefined
         }));

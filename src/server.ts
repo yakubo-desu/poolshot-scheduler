@@ -4,15 +4,22 @@ import { PoolStage } from './pools.js';
 
 export class Server {
     private app = express();
+    private adminPrefix = process.env.ADMIN_PREFIX;
 
     constructor(private poolStage: PoolStage, private elimStage: ElimStage) {
+        if (!this.adminPrefix) throw new Error('No admin prefix provided!');
+        // parse json post body
         this.app.use(express.json());
         // api and healthcheck
         this.app.get('/healthcheck', this.withErrorsHandled(this.healthCheck));
         this.app.get('/api/pool-standings', this.withErrorsHandled(this.getPoolStandings));
         this.app.get('/api/day1-schedule', this.withErrorsHandled(this.getDay1Schedule));
         this.app.get('/api/day2-schedule', this.withErrorsHandled(this.getDay2Schedule));
-        this.app.post('/api/report-match/:matchId', this.withErrorsHandled(this.reportMatch));
+
+        // admin api and static files
+        this.app.get(`/api/${this.adminPrefix}/all-reportable-matches`, this.withErrorsHandled(this.getAllReportableMatches));
+        this.app.post(`/api/${this.adminPrefix}/report-match/:matchId`, this.withErrorsHandled(this.reportMatch));
+        this.app.use(`/${this.adminPrefix}/` , express.static('admin'));
 
         // anything else try to find from public folder
         this.app.use('/', express.static('public'));
@@ -34,15 +41,27 @@ export class Server {
         res.send(matches);
     }
 
+    private getAllReportableMatches: RequestHandler = (req, res) => {
+        const matches = [
+            ...this.poolStage.matches,
+            ...this.elimStage.matches
+        ].filter(m => !m.lock && !m.teams[0].hasOwnProperty('ref') && !m.teams[1].hasOwnProperty('ref'));
+        res.send(matches);
+    }
+
     private reportMatch: RequestHandler = async (req, res) => {
         const { matchId } = req.params;
         const { results } = req.body;
-        // TODO: Handle elim stage matches
-        if (!this.poolStage.matches.find(m => m.id === matchId)) {
-            return res.sendStatus(404);
+        if (this.poolStage.matches.find(m => m.id === matchId)) {
+            await this.poolStage.reportMatch(matchId, results);
+            return res.sendStatus(200);
         }
-        await this.poolStage.reportMatch(matchId, results);
-        res.sendStatus(200);
+        if (this.elimStage.matches.find(m => m.id === matchId)) {
+            await this.elimStage.reportMatch(matchId, results);
+            return res.sendStatus(200);
+        }
+        // if match not found in poolStage and elimStage!
+        res.sendStatus(404)
     }
 
     private healthCheck: RequestHandler = (req, res) => {
