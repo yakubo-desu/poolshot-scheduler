@@ -14,7 +14,7 @@
             <div class="poolshot"><img height="150" src="https://cdn.discordapp.com/attachments/893033554538283060/893047744967606302/HEADINGPOOLSHOT2.svg"></div>
             <div class="page-heading"><img height="100" src="https://cdn.discordapp.com/attachments/851347354555514880/893722460476821514/unknown.png"></div>
             <br/>
-            <div class="search">
+            <div v-if="!hideSearch" class="search">
                 <input type="text" v-model="searchQuery" placeholder="🔎 Search match or team">
             </div>
             <div class="matches">

@@ -2,6 +2,7 @@
 const AppState = Vue.createApp({
     data() {
         return {
+            hideSearch: false,
             searchQuery: '',
             matches: []
         }
@@ -42,6 +43,11 @@ const AppState = Vue.createApp({
         }
     }
 }).mount('body');
+
+if (location.search.indexOf('onstream') !== -1) {
+    AppState.searchQuery = 'on stream';
+    AppState.hideSearch = true;
+}
 
 const fetchData = () => axios.get('/api/day1-schedule').then(({data}) => AppState.updateMatches(data));
 
