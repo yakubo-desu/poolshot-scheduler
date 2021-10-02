@@ -34,7 +34,7 @@ const AppState = Vue.createApp({
             if (!match || match.diff < 0) return '00:00';
             let tl = match.diff; //luxon.DateTime.fromISO("2021-10-02T08:00:00.000Z").diffNow('seconds').toObject().seconds ^ 0;
             function twoDig(n) {
-                n = n % 100;
+                n = Math.round(n % 100);
                 if (0 <= n && n < 10) return '0' + n;
                 else return '' + n;
             }
