@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap');
+
+body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    margin: 0;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    width: fit-content;
+    height: fit-content;
+    background-color: black;
+}
+
+:root {
+    --blue-team-color: #2069df;
+    --orange-team-color: #fa8305;
+}
+
+.container {
+    text-transform: uppercase;
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+}
+
+.container img {
+    position: relative;
+    bottom: -960px;
+}
+
+.middle-text {
+    transform: scaleX(1.2);
+    margin: 0 4px;
+    z-index: -1;
+}
+
+.container > div {
+    position: absolute;
+    color: white;
+}
+.container > div.timer {
+    bottom: 15px;
+    right: 42px;
+    width: 158px;
+    text-align: center;
+    font-size: 70px;
+    letter-spacing: 3px;
+}
+.container > div.next-up {
+    bottom: 50px;
+    color: black;
+    left: 160px;
+    width: 1600px;
+    font-size: 45px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.logo img {
+    height: 90px;
+}
+.logo {
+    bottom: 975px;
+    left: 40px;
+}
+.scrolling-info {
+    bottom: 12px;
+    font-size: 20px;
+    width: 100%;
+    z-index: -1;
+    text-align: center;
+}
