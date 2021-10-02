@@ -1,6 +1,6 @@
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
-import { Match, StoreData, TeamRef } from "./types.js";
+import { Match, StoreData, Team, TeamRef } from "./types.js";
 import { Store } from "./store.js";
 import { matchWinner } from "./utils.js";
 
@@ -100,16 +100,17 @@ export class PoolStage {
         return this.store.data.schedule.day1.matches.map(match => ({
             ...match,
             lock: this.isLocked,
-            teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref) ?? { ref, name: ref }),
+            teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref)[0] ?? { ref, name: ref }),
             teamsRefs: undefined
         }));
     }
 
-    resolveTeamRef(ref: TeamRef) {
+    resolveTeamRef(ref: TeamRef): [team?: Team, matchRef?: string] {
         if (ref?.startsWith('seed-')) {
             const index = +(ref.slice('seed-'.length)) - 1;
-            return this.store.data.teams[index];
+            return [this.store.data.teams[index]];
         }
+        return [];
     }
 
     reportMatch(matchId: string, results: [number, number]) {

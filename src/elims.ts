@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { PoolStage } from './pools.js';
 import { Store } from "./store.js";
-import { PoolName, TeamRef } from './types.js';
+import { PoolName, Team, TeamRef } from './types.js';
 import { matchLoser, matchWinner } from './utils.js';
 
 export class ElimStage {
@@ -13,30 +13,31 @@ export class ElimStage {
     get matches() {
         return this.store.data.schedule.day2.matches.map(match => ({
             ...match,
-            teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref) ?? { ref, name: ref }),
+            teams: match.teams || match.teamsRefs.map(ref => this.resolveTeamRef(ref)[0] ?? { ref, name: ref }),
             teamsRefs: undefined
         }));
     }
 
-    resolveTeamRef(teamRef: TeamRef) {
+    resolveTeamRef(teamRef: TeamRef): [team?: Team, matchRef?: string] {
         if (teamRef.startsWith('pool-')) {
-            if (!this.poolStage.isLocked) return;
+            if (!this.poolStage.isLocked) return [];
             const pool = teamRef.slice('pool-'.length)[0].toUpperCase() as Uppercase<PoolName>;
             const pos = +teamRef.slice('pool-a'.length);
-            return this.poolStage.standings[`pool${pool}`][pos-1].team;
+            return [this.poolStage.standings[`pool${pool}`][pos-1].team];
         }
         if (teamRef.startsWith('wo-')) {
             const matchRef = teamRef.slice('wo-'.length);
             const match = this.store.data.schedule.day2.matches.find(m => m.ref === matchRef);
-            if (!match) return;
-            return matchWinner(match);
+            if (!match) return [];
+            return [matchWinner(match), matchRef];
         }
         if (teamRef.startsWith('lo-')) {
             const matchRef = teamRef.slice('lo-'.length);
             const match = this.store.data.schedule.day2.matches.find(m => m.ref === matchRef);
-            if (!match) return;
-            return matchLoser(match);
+            if (!match) return [];
+            return [matchLoser(match), matchRef];
         }
+        return [];
     }
 
     reportMatch(matchId: string, results: [number, number]) {

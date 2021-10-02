@@ -45,7 +45,7 @@ export class Server {
         const matches = [
             ...this.poolStage.matches,
             ...this.elimStage.matches
-        ].filter(m => !m.lock && !m.teams[0].hasOwnProperty('ref') && !m.teams[1].hasOwnProperty('ref'));
+        ].filter(m => !m.lock);
         res.send(matches);
     }
 

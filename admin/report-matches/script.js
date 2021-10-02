@@ -27,7 +27,10 @@ const AppState = Vue.createApp({
                 set(text) {
                     this.match.results = resultsTextToArray(text);
                     axios.post('/api/' + adminPrefix + '/report-match/' + this.match.id, this.match)
-                        .then(() => alert('Result Updated for ' + this.match.name + ' Match'))
+                        .then(() => {
+                            alert('Result Updated for ' + this.match.name + ' Match');
+                            fetchData();
+                        })
                         .catch(() => alert('Failed to update result for ' + this.match.name + ' Match'))
                 }
             }
@@ -54,7 +57,7 @@ const AppState = Vue.createApp({
                 <div class="name">{{ match.name }}</div>
                 <div class="fixture">
                     <div class="team-blue">{{ match.teams[0].name }}</div>
-                    <select v-model="results">
+                    <select v-model="results" :disabled="match.teams[0].ref || match.teams[1].ref">
                         <option v-for="opt in getResultOptions(match)" :value="opt">{{ opt }}</option>
                     </select>
                     <div class="team-orange">{{ match.teams[1].name }}</div>
@@ -90,8 +93,25 @@ const AppState = Vue.createApp({
     },
 
     methods: {
+        refToPlaceholderName(ref) {
+            if (ref.toLowerCase().startsWith('wo-')) {
+                const suffix = ref.slice('wo-'.length);
+                return 'Winner of ' + suffix;
+            }
+            if (ref.toLowerCase().startsWith('lo-')) {
+                const suffix = ref.slice('lo-'.length);
+                return 'Loser of ' + suffix;
+            }
+            return ref;
+        },
         updateMatches(matches) {
-            this.matches = matches
+            this.matches = matches.map(match => ({
+                ...match,
+                teams: match.teams.map(team => ({
+                    ...team,
+                    name: team.ref === team.name ? this.refToPlaceholderName(team.name) : team.name
+                }))
+            }))
         }
     }
 }).mount('body');
