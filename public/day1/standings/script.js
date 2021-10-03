@@ -32,5 +32,5 @@ const fetchData = () => axios.get('/api/pool-standings').then(({data}) => AppSta
 
 fetchData();
 if (location.search.indexOf('autorefresh') !== -1) {
-    setInterval(fetchData, 10000);
+    setInterval(fetchData, 5000);
 }

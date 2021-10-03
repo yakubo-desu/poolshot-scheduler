@@ -70,5 +70,5 @@ const fetchData = () => axios.get('/api/day2-schedule').then(({data}) => AppStat
 
 fetchData();
 if (location.search.indexOf('autorefresh') !== -1) {
-    setInterval(fetchData, 10000);
+    setInterval(fetchData, 5000);
 }
