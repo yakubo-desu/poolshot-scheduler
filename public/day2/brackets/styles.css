@@ -37,6 +37,17 @@ body {
 .brackets {
     width: 100%;
     text-align: center;
+    position: relative;
+}
+.brackets.onlyUpper {
+    transform: scale(1.38) translate(218px, 80px);
+    height: 385px;
+    overflow: hidden;
+}
+.brackets.onlyLower {
+    transform: scale(1.38) translate(218px, 80px);
+    height: 385px;
+    overflow: hidden;
 }
 .fixture {
     position: absolute;
