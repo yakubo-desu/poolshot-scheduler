@@ -4,7 +4,8 @@ const AppState = Vue.createApp({
         return {
             matchesMap: {},
             onlyUpper: location.search.indexOf('upper') !== -1,
-            onlyLower: location.search.indexOf('lower') !== -1
+            onlyLower: location.search.indexOf('lower') !== -1,
+            onlyGF: location.search.indexOf('gf') !== -1
         }
     },
 

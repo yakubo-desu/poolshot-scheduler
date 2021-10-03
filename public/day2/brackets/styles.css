@@ -39,16 +39,7 @@ body {
     text-align: center;
     position: relative;
 }
-.brackets.onlyUpper {
-    transform: scale(1.38) translate(218px, 80px);
-    height: 385px;
-    overflow: hidden;
-}
-.brackets.onlyLower {
-    transform: scale(1.38) translate(218px, 80px);
-    height: 385px;
-    overflow: hidden;
-}
+
 .fixture {
     position: absolute;
     width: 195px;
@@ -96,4 +87,28 @@ body {
     top: 42px;
     left: 52px;
     width: fit-content;
+}
+
+
+.clipper.onlyUpper, .clipper.onlyLower {
+    overflow: hidden;
+    height: 525px;
+}
+.clipper.onlyGF {
+    overflow: hidden;
+    height: 525px;
+    width: 900px;
+    margin: auto;
+}
+.brackets.onlyUpper {
+    transform: scale(1.38) translate(218px, 120px);
+}
+.brackets.onlyLower {
+    transform: scale(1.38) translate(218px, -270px);
+}
+.brackets.onlyGF {
+    transform: scale(2) translate(-1150px, -70px);
+}
+.brackets.onlyGF > div {
+    margin-left: -57px;
 }

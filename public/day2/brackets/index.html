@@ -14,50 +14,50 @@
             <div class="poolshot"><img height="150" src="https://cdn.discordapp.com/attachments/893033554538283060/893047744967606302/HEADINGPOOLSHOT2.svg"></div>
             <div class="page-heading"><img height="100" src="https://cdn.discordapp.com/attachments/893041208903991306/893913028964286484/unknown.png"></div>
             <br/>
-            <div class="brackets" :class="{ onlyUpper, onlyLower }">
-                <img height="750" style="margin-top: -2px;" src="https://cdn.discordapp.com/attachments/878587826999017482/894087934171545650/elimscheduletemplateupdated.svg">
-
-                <!-- Upper Bracket -->
-                <div class="bracket-header" style="top: 3px;left: 620px;">Upper Bracket</div>
-                <!-- Upper Quarters -->
-                <div class="bracket-round" style="top: 32px;left: 84px;">Upper Quarters (UQF)</div>
-                <bracket-fixture :match="matchesMap['uqf1']" top="68px" left="110px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['uqf2']" top="138px" left="110px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['uqf3']" top="210px" left="110px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['uqf4']" top="280px" left="110px"></bracket-fixture>
-                <!-- Upper Semis -->
-                <div class="bracket-round" style="top: 63px;left: 595px;">Upper Semis (USF)</div>
-                <bracket-fixture :match="matchesMap['usf1']" top="104px" left="622px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['usf2']" top="245px" left="622px"></bracket-fixture>
-                <!-- Upper Finals -->
-                <div class="bracket-round" style="top: 131px;left: 1130px;">Upper Finals (UF)</div>
-                <bracket-fixture :match="matchesMap['uf']" top="177px" left="1162px"></bracket-fixture>
-
-                <!-- Lower Bracket -->
-                <div class="bracket-header" style="top: 391px;left: 620px;">Lower Bracket</div>
-                <!-- Lower Pre-Quarters -->
-                <div class="bracket-round" style="top: 420px;left: 84px;">Lower Pre-Quarters (LPQF)</div>
-                <bracket-fixture :match="matchesMap['lpqf1']" top="455px" left="110px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['lpqf2']" top="526px" left="110px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['lpqf3']" top="596px" left="110px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['lpqf4']" top="668px" left="110px"></bracket-fixture>
-                <!-- Lower Quarters -->
-                <div class="bracket-round" style="top: 448px;left: 358px;">Lower Quarters (LQF)</div>
-                <bracket-fixture :match="matchesMap['lqf1']" top="492px" left="384px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['lqf2']" top="633px" left="384px"></bracket-fixture>
-                <!-- Lower Pre-Semis -->
-                <div class="bracket-round" style="top: 448px;left: 595px;">Lower Pre-Semis (LPSF)</div>
-                <bracket-fixture :match="matchesMap['lpsf1']" top="492px" left="622px"></bracket-fixture>
-                <bracket-fixture :match="matchesMap['lpsf2']" top="633px" left="622px"></bracket-fixture>
-                <!-- Lower Semis -->
-                <div class="bracket-round" style="top: 521px;left: 895px;">Lower Semis (LSF)</div>
-                <bracket-fixture :match="matchesMap['lsf']" top="566px" left="923px"></bracket-fixture>
-                <!-- Lower Finals -->
-                <div class="bracket-round" style="top: 521px;left: 1130px;">Lower Finals (LF)</div>
-                <bracket-fixture :match="matchesMap['lf']" top="568px" left="1162px"></bracket-fixture>
-                <!-- Grand Finals -->
-                <div class="bracket-header" style="top: 278px;left: 1550px;font-size: 30px;">Grand Finals</div>
-                <bracket-fixture :match="matchesMap['gf']" top="375px" left="1558px"></bracket-fixture>
+            <div class="clipper" :class="{ onlyUpper, onlyLower, onlyGF }">
+                <div class="brackets" :class="{ onlyUpper, onlyLower, onlyGF }">
+                    <img height="750" style="margin-top: -2px;" src="https://cdn.discordapp.com/attachments/878587826999017482/894087934171545650/elimscheduletemplateupdated.svg">
+                    <!-- Upper Bracket -->
+                    <div class="bracket-header" style="top: 3px;left: 620px;">Upper Bracket</div>
+                    <!-- Upper Quarters -->
+                    <div class="bracket-round" style="top: 32px;left: 84px;">Upper Quarters (UQF)</div>
+                    <bracket-fixture :match="matchesMap['uqf1']" top="68px" left="110px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['uqf2']" top="138px" left="110px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['uqf3']" top="210px" left="110px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['uqf4']" top="280px" left="110px"></bracket-fixture>
+                    <!-- Upper Semis -->
+                    <div class="bracket-round" style="top: 63px;left: 595px;">Upper Semis (USF)</div>
+                    <bracket-fixture :match="matchesMap['usf1']" top="104px" left="622px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['usf2']" top="245px" left="622px"></bracket-fixture>
+                    <!-- Upper Finals -->
+                    <div class="bracket-round" style="top: 131px;left: 1130px;">Upper Finals (UF)</div>
+                    <bracket-fixture :match="matchesMap['uf']" top="177px" left="1162px"></bracket-fixture>
+                    <!-- Lower Bracket -->
+                    <div class="bracket-header" style="top: 391px;left: 620px;">Lower Bracket</div>
+                    <!-- Lower Pre-Quarters -->
+                    <div class="bracket-round" style="top: 420px;left: 84px;">Lower Pre-Quarters (LPQF)</div>
+                    <bracket-fixture :match="matchesMap['lpqf1']" top="455px" left="110px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['lpqf2']" top="526px" left="110px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['lpqf3']" top="596px" left="110px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['lpqf4']" top="668px" left="110px"></bracket-fixture>
+                    <!-- Lower Quarters -->
+                    <div class="bracket-round" style="top: 448px;left: 358px;">Lower Quarters (LQF)</div>
+                    <bracket-fixture :match="matchesMap['lqf1']" top="492px" left="384px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['lqf2']" top="633px" left="384px"></bracket-fixture>
+                    <!-- Lower Pre-Semis -->
+                    <div class="bracket-round" style="top: 448px;left: 595px;">Lower Pre-Semis (LPSF)</div>
+                    <bracket-fixture :match="matchesMap['lpsf1']" top="492px" left="622px"></bracket-fixture>
+                    <bracket-fixture :match="matchesMap['lpsf2']" top="633px" left="622px"></bracket-fixture>
+                    <!-- Lower Semis -->
+                    <div class="bracket-round" style="top: 521px;left: 895px;">Lower Semis (LSF)</div>
+                    <bracket-fixture :match="matchesMap['lsf']" top="566px" left="923px"></bracket-fixture>
+                    <!-- Lower Finals -->
+                    <div class="bracket-round" style="top: 521px;left: 1130px;">Lower Finals (LF)</div>
+                    <bracket-fixture :match="matchesMap['lf']" top="568px" left="1162px"></bracket-fixture>
+                    <!-- Grand Finals -->
+                    <div class="bracket-header" style="top: 278px;left: 1550px;font-size: 30px;">Grand Finals</div>
+                    <bracket-fixture :match="matchesMap['gf']" top="375px" left="1558px"></bracket-fixture>
+                </div>
             </div>
         </div>
     </body>
