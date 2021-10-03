@@ -22,6 +22,20 @@ export class Store {
         ];
     }
 
+    async updateMatchTime(matchRef: string, time: Date) {
+        const match = this.allMatches.find(m => m.ref === matchRef);
+        if (!match) {
+            console.warn('Didn\'t update time of match cuz not found with ref: ' + matchRef);
+            return;
+        }
+        if (match.lock) {
+            throw HTTPError.BAD_REQUEST('Cant update time for locked match! ref: ' + matchRef);
+        }
+        match.time = time;
+        await this.db.write();
+        return match;
+    }
+
     async reportMatch(matchId: string, results: [number, number], resolveTeamRef: (ref: TeamRef) => [team?: Team, matchRef?: string]) {
         if (results === null) {
             return this.resetMatch(matchId, resolveTeamRef);

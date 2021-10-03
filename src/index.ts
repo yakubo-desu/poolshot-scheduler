@@ -10,7 +10,7 @@ const main = async () => {
 
     const poolStage = new PoolStage(store);
     const elimStage = new ElimStage(store, poolStage);
-    const server = new Server(poolStage, elimStage);
+    const server = new Server(poolStage, elimStage, store);
 }
 
 // db.data.schedule.day1.matches = [

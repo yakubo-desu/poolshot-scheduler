@@ -7,6 +7,13 @@
         <link  rel="stylesheet" href="./styles.css">
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://unpkg.com/vue@next"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/timeshift-js@1.1.1/timeshift.min.js"></script>
+        <script>
+            Date = TimeShift.Date;                      // Overwrite Date object
+            let initTime = new Date("Sun Oct 03 2021 14:14:47 GMT+0530 (India Standard Time)").getTime();
+            setInterval(() => TimeShift.setTime(++initTime), 1000);
+            TimeShift.setTime(++initTime);
+        </script> -->
         <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
     </head>
     <body>
@@ -16,8 +23,8 @@
             <img width="225" src="https://cdn.discordapp.com/attachments/893383942894399498/893553618043670528/SCROLLBAR_TIMERBOX.svg"/>
             <div class="timer">{{ timeLeft }}</div>
             <div class="logo"><img src="https://cdn.discordapp.com/attachments/893383942894399498/893554033833427044/LOGO_POOLSHOT_VERTICAL.svg"></div>
-            <div v-if="upNextMatch" class="next-up">Coming Up Next - {{upNextMatch.teams[0].name}} vs {{upNextMatch.teams[1].name}}</div>
-            <div class="scrolling-info">So Stay Tuned !</div>
+            <div v-if="upNextMatch" class="next-up">{{upNextMatch.teams[0].name}} vs {{upNextMatch.teams[1].name}} - Coming Up Next!</div>
+            <div class="scrolling-info">So Stay Tuned for more action coming at you from PoolShot #2!</div>
         </div>
     </body>
     <script src="./script.js"></script>

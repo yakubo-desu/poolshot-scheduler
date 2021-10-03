@@ -1,12 +1,14 @@
 import express, { RequestHandler } from 'express';
 import { ElimStage } from './elims.js';
 import { PoolStage } from './pools.js';
+import { Store } from './store.js';
+import { Match } from './types.js';
 
 export class Server {
     private app = express();
     private adminPrefix = process.env.ADMIN_PREFIX;
 
-    constructor(private poolStage: PoolStage, private elimStage: ElimStage) {
+    constructor(private poolStage: PoolStage, private elimStage: ElimStage, private store: Store) {
         if (!this.adminPrefix) throw new Error('No admin prefix provided!');
         // parse json post body
         this.app.use(express.json());
@@ -19,6 +21,7 @@ export class Server {
         // admin api and static files
         this.app.get(`/api/${this.adminPrefix}/all-reportable-matches`, this.withErrorsHandled(this.getAllReportableMatches));
         this.app.post(`/api/${this.adminPrefix}/report-match/:matchId`, this.withErrorsHandled(this.reportMatch));
+        this.app.post(`/api/${this.adminPrefix}/update-time`, this.withErrorsHandled(this.updateTime));
         this.app.use(`/${this.adminPrefix}/` , express.static('admin'));
 
         // anything else try to find from public folder
@@ -62,6 +65,16 @@ export class Server {
         }
         // if match not found in poolStage and elimStage!
         res.sendStatus(404)
+    }
+
+    private updateTime: RequestHandler = async (req, res) => {
+        const match: Match = req.body;
+        if (match.ref && match.time) {
+            const upm = await this.store.updateMatchTime(match.ref, match.time);
+            res.status(200).send(upm);
+            return;
+        }
+        res.sendStatus(400);
     }
 
     private healthCheck: RequestHandler = (req, res) => {

@@ -12,8 +12,25 @@ const AppState = Vue.createApp({
     },
 
     methods: {
+        refToPlaceholderName(ref) {
+            if (ref.toLowerCase().startsWith('wo-')) {
+                const suffix = ref.slice('wo-'.length);
+                return 'Winner of ' + suffix;
+            }
+            if (ref.toLowerCase().startsWith('lo-')) {
+                const suffix = ref.slice('lo-'.length);
+                return 'Loser of ' + suffix;
+            }
+            return ref;
+        },
         updateMatches(matches) {
-            this.matches = matches
+            this.matches = matches.filter(m => m.willStream).map(match => ({
+                ...match,
+                teams: match.teams.map(team => ({
+                    ...team,
+                    name: team.ref === team.name ? this.refToPlaceholderName(team.name) : team.name
+                }))
+            }));
         },
         getTime(match) {
             const dt = luxon.DateTime.fromISO(match.time);
@@ -21,16 +38,18 @@ const AppState = Vue.createApp({
         },
         setUpNextMatch() {
             const diffs = this.matches
-                .filter(m => m.willStream)
                 .map(m => ({
                     ...m, diff: luxon.DateTime.fromISO(m.time).diffNow().as('seconds')
-                }));
-            const m = diffs.find(d => d.diff > -10);
-            this.upNextMatch = m || this.matches.filter(m => m.willStream).pop();
+                }))
+                .sort((a, b) => a.diff - b.diff);
+            const m = diffs.find(d => d.diff > -600);
+            this.upNextMatch = m || diffs.pop();
         },
         setTimeLeft() {
-            this.setUpNextMatch()
-            const match = this.upNextMatch;
+            this.setUpNextMatch();
+            this.timeLeft = this.getTimeLeft(this.upNextMatch);
+        },
+        getTimeLeft(match) {
             if (!match || match.diff < 0) return '00:00';
             let tl = match.diff; //luxon.DateTime.fromISO("2021-10-02T08:00:00.000Z").diffNow('seconds').toObject().seconds ^ 0;
             function twoDig(n) {
@@ -40,7 +59,7 @@ const AppState = Vue.createApp({
             }
             if (tl < 0 || tl > 3600) tl = 0;
             const s = tl % 60, m = (tl - s) / 60;
-            this.timeLeft = twoDig(m) + ':' + twoDig(s);
+            return twoDig(m) + ':' + twoDig(s);
         }
     }
 }).mount('body');
@@ -54,9 +73,7 @@ if (location.search.indexOf('onstream') !== -1) {
     AppState.hideSearch = true;
 }
 
-const fetchData = () => axios.get('/api/day1-schedule').then(({data}) => AppState.updateMatches(data));
+const fetchData = () => axios.get('/api/day2-schedule').then(({data}) => AppState.updateMatches(data));
 
 fetchData();
-if (location.search.indexOf('autorefresh') !== -1) {
-    setInterval(fetchData, 10000);
-}
+setInterval(fetchData, 5000);
