@@ -23,7 +23,7 @@
                     <div class="name">{{ match.name }}</div>
                     <div class="fixture">
                         <div class="team-blue">{{ match.teams[0].name }}</div>
-                        <span>{{ match.results ? match.results[0] + ' - ' + match.results[1] : getTime(match) }}</span>
+                        <span>{{ !onlyTimings && match.results ? match.results[0] + ' - ' + match.results[1] : getTime(match) }}</span>
                         <div class="team-orange">{{ match.teams[1].name }}</div>
                     </div>
                     <div class="best-of">Best of {{match.bestOf}}</div>

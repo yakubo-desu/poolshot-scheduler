@@ -2,6 +2,7 @@
 const AppState = Vue.createApp({
     data() {
         return {
+            onlyTimings: false,
             hideSearch: false,
             searchQuery: '',
             matches: []
@@ -43,6 +44,10 @@ const AppState = Vue.createApp({
         }
     }
 }).mount('body');
+
+if (location.search.indexOf('onlytimings') !== -1) {
+    AppState.onlyTimings = true;
+}
 
 if (location.search.indexOf('onstream') !== -1) {
     AppState.searchQuery = 'on stream';
